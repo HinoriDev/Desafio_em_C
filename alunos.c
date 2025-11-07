@@ -33,11 +33,68 @@
         printf("Digite o nome do aluno: ");
         fgets(nomes[*total], TAMANHO_MAXIMO_NOME, stdin);
 
+        int indice = 0;
+        while (nomes[total][indice] != '\0')
+        {
+            if(nomes[*total][indice] == '\n') {
+                nomes[*total][indice] = '\0';
+                break;
+            }
+            indice++;
+
+        }
+
         printf("Digite a nota: ");
         scanf("%d", &notas[*total]);
         while (getchar() != '\n');
 
         (*total)++;
+    }
+
+    void listar_alunos(char nomes[][TAMANHO_MAXIMO_NOME], int notas[], int total) {
+        if(total == 0) {
+            printf("Nenhum aluno cadastrado\n");
+            return;
+        }
+
+        printf("=====[ ALUNOS ]=====\n");
+        for(int pos = 0; pos < total; pos++) {
+            printf("%d. %s - Nota: %d\n", (pos + 1), nome[pos], notas[pos]);
+        }
+
+    void salvar_arquivo(char nome[][TAMANHO_MAXIMO_NOME], int notas[], int total) {
+        FILE *Arquivo = fopen("aluno.txt", "w");
+
+        if(aruivo == NULL) {
+            printf("Erro ao abrir o arquivo");
+            return;
+        }
+
+        for(int pos = 0; pos < total; pos++ ) {
+            fprint(arquivo, "%s;%d\n" nomes[pos], notas[pos]);
+        }
+
+        fclose(arquivo);
+        printf("Dados salvos com sucesso em 'alunos.txt'\n")
+    }
+    int carregar_arquivo(char nome[][TAMANHO_MAXIMO_NOME], int notas[]) {
+            FILE *arquivo = fopen("alunos.txt", "r");
+
+            if(arquivo == NULL) {
+                printf("Arquivo 'alunos.txt' não encontrado.\n");
+            }
+
+            int total = 0;
+            while(fscanf(arquivo, "%49[^;];%d\n", nomes[total], notas[total]) == 2)
+            {
+                total++;
+                if (total >= MAXIMO_ALUNOS) break;
+            }
+
+            fclose(arquivo);
+            printf("%d aluno carregado do arquivo.\n", total);
+            return total;
+    }
     }
 
 int  main() {
@@ -56,13 +113,13 @@ int  main() {
                 printf("Ultimo Valor: %s : %d", nomes[total - 1], notas[total - 1] );
                 break;
             case 2:
-                printf("Listar\n");
+                listar_alunos(nomes, notas, total);
                 break;
             case 3:
-                printf("Salvar Arquivo\n");
+                salvar_arquivo(nomes, notas, total);
                 break;
             case 4:
-                printf("Carregar Arquivo\n");
+                total = carregar_arquivo(nomes, notas);
                 break;
             case 0:
                 printf("Sair\n");
